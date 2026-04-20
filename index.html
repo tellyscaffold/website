@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>dox me :3</title>
+<title>dox me :3 <title>
 
 <style>
     * {
@@ -12,65 +12,58 @@
         box-sizing: border-box;
     }
 
-    body {
-        height: 100dvh;
+    html, body {
         width: 100%;
+        height: 100%;
         overflow: hidden;
-        display: flex;
-        justify-content: center;
-        align-items: center;
     }
 
-    /* Background image */
+    /* Background */
     .bg {
         position: fixed;
         top: 0;
         left: 0;
-        width: 100%;
-        height: 100%;
+        width: 100vw;
+        height: 100vh;
         object-fit: cover;
         z-index: 0;
     }
 
-    /* Bouncing chicken */
+    /* Chicken */
     .chicken {
-        position: absolute;
+        position: fixed;
         width: 120px;
-        height: auto;
         z-index: 1;
         pointer-events: none;
     }
 
-    /* Rainbow text */
+    /* Text */
     .rainbow-text {
-        position: relative;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
         z-index: 2;
-        font-size: clamp(24px, 5vw, 60px);
+
+        font-size: clamp(24px, 6vw, 64px);
         font-weight: bold;
         font-family: Arial, sans-serif;
-        text-align: center;
 
         background: linear-gradient(
             90deg,
-            red,
-            orange,
-            yellow,
-            green,
-            cyan,
-            blue,
-            violet
+            red, orange, yellow, green, cyan, blue, violet
         );
-        background-size: 400%;
+        background-size: 300%;
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
 
-        animation: rainbow 6s linear infinite;
-        text-shadow: 0 0 10px rgba(0,0,0,0.6);
+        animation: rainbow 4s linear infinite;
+        text-shadow: 0 0 12px rgba(0,0,0,0.7);
     }
 
     @keyframes rainbow {
         0% { background-position: 0% }
-        100% { background-position: 400% }
+        100% { background-position: 300% }
     }
 </style>
 </head>
@@ -78,34 +71,66 @@
 <body>
 
 <img src="/image.png" class="bg">
-<img src="/IMG_6955.jpeg" class="chicken" id="chicken">
+<img src="/chicken.png" class="chicken" id="chicken">
 <div class="rainbow-text">tg: slitfortelly</div>
 
 <script>
-    const chicken = document.getElementById("chicken");
+const chicken = document.getElementById("chicken");
 
-    let x = 100;
-    let y = 100;
-    let dx = 4; // speed (increase for faster)
-    let dy = 4;
+let x = 80;
+let y = 80;
+let dx = 7;
+let dy = 7;
 
-    function animate() {
-        const rect = chicken.getBoundingClientRect();
-        const screenW = window.innerWidth;
-        const screenH = window.innerHeight;
+let screenW, screenH, w, h;
 
-        if (x + rect.width >= screenW || x <= 0) dx *= -1;
-        if (y + rect.height >= screenH || y <= 0) dy *= -1;
+function updateSizes() {
+    screenW = window.innerWidth;
+    screenH = window.innerHeight;
+    w = chicken.offsetWidth;
+    h = chicken.offsetHeight;
+}
 
-        x += dx;
-        y += dy;
+// keep sizes correct on resize/orientation change
+window.addEventListener("resize", updateSizes);
 
-        chicken.style.transform = `translate(${x}px, ${y}px)`;
-
-        requestAnimationFrame(animate);
+function animate() {
+    if (x + w >= screenW) {
+        x = screenW - w;
+        dx *= -1;
+    }
+    if (x <= 0) {
+        x = 0;
+        dx *= -1;
     }
 
+    if (y + h >= screenH) {
+        y = screenH - h;
+        dy *= -1;
+    }
+    if (y <= 0) {
+        y = 0;
+        dy *= -1;
+    }
+
+    x += dx;
+    y += dy;
+
+    chicken.style.transform = `translate(${x}px, ${y}px)`;
+
+    requestAnimationFrame(animate);
+}
+
+chicken.onload = () => {
+    updateSizes();
     animate();
+};
+
+// if cached
+if (chicken.complete) {
+    updateSizes();
+    animate();
+}
 </script>
 
 </body>
